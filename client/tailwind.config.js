@@ -13,6 +13,7 @@ module.exports = {
         sentMessageBackground: "#005c4b",
         receivedMessageBackground: "#202c33",
         tealColor: "#008069",
+        tealBackground: "#00a884",
       },
     },
   },

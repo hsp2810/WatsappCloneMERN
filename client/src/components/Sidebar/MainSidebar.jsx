@@ -7,12 +7,29 @@ import ChatBoxSearch from "./Chats/ChatBoxSearch";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ChatBoxes from "./Chats/ChatBoxes";
 import ProfileDrawer from "./Profile/ProfileDrawer";
+import { logout } from "../../api/user";
+import { useDispatch } from "react-redux";
 
-const MainSidebar = ({ openProfileDrawer, setProfileDrawer, toggleDrawer }) => {
+const MainSidebar = ({
+  openProfileDrawer,
+  setProfileDrawer,
+  toggleDrawer,
+  socket,
+}) => {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const dispatch = useDispatch();
 
   const toggleMenuBar = () => {
     setMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    const response = await logout();
+    if (response.status === 200) {
+      dispatch({
+        type: "logoutSuccess",
+      });
+    }
   };
 
   return (
@@ -22,7 +39,7 @@ const MainSidebar = ({ openProfileDrawer, setProfileDrawer, toggleDrawer }) => {
         setProfileDrawer={setProfileDrawer}
         toggleDrawer={toggleDrawer}
       />
-      <div className='flex w-[30%] flex-col'>
+      <div className='md:flex w-[30%] flex-col'>
         <div className='flex bg-panelHeaderBackground items-center justify-between w-full py-2 px-4'>
           <div className='w-[2.5rem] cursor-pointer' onClick={setProfileDrawer}>
             <img src='/dp.jpg' alt='DP' className='rounded-full' />
@@ -41,7 +58,10 @@ const MainSidebar = ({ openProfileDrawer, setProfileDrawer, toggleDrawer }) => {
                   <li className='mt-4 font-normal p-3 pl-6 text-sm cursor-pointer hover:bg-appBackground'>
                     New group
                   </li>
-                  <li className='my-2 font-normal p-3 pl-6 text-sm cursor-pointer hover:bg-appBackground'>
+                  <li
+                    className='my-2 font-normal p-3 pl-6 text-sm cursor-pointer hover:bg-appBackground'
+                    onClick={handleLogout}
+                  >
                     Logout
                   </li>
                 </ul>
@@ -57,7 +77,7 @@ const MainSidebar = ({ openProfileDrawer, setProfileDrawer, toggleDrawer }) => {
           />
         </div>
         <div className='w-full'>
-          <ChatBoxes />
+          <ChatBoxes socket={socket} />
         </div>
       </div>
     </>

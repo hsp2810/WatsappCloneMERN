@@ -4,10 +4,17 @@ import createHttpError, { HttpError } from "http-errors";
 import "dotenv/config";
 import cors from "cors";
 import { connectToDatabase } from "./database/connnectdb.js";
+import cookieParser from "cookie-parser";
 
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(cookieParser());
 
 // Routes
 import messageRouter from "./routes/messageRoutes.js";

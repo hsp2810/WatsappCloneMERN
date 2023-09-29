@@ -1,39 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ChatBoxItem from "./ChatBoxItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { addChat } from "../../../api/chats";
 
-const ChatBoxes = () => {
+const ChatBoxes = ({ socket }) => {
   const dispatch = useDispatch();
-  const [chats, setChats] = useState([
-    { id: "1", name: "Harshit Patel" },
-    { id: "2", name: "Manish Patel" },
-    { id: "3", name: "Shrey Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-    { id: "4", name: "Mohan Patel" },
-  ]);
+  const { isLogin } = useSelector((state) => state.auth);
+  const { friends } = useSelector((state) => state.auth);
+  const { homeUser } = useSelector((state) => state.auth);
+  const [chats, setChats] = useState(null);
 
-  const handleSelectChat = (chatBox) => {
-    dispatch({
-      type: "selectChat",
-      payload: {
-        selectedChat: chatBox.id,
-      },
+  useEffect(() => {
+    setChats(friends);
+  }, [friends, isLogin]);
+
+  const handleSelectChat = async (chatBox) => {
+    const response = await addChat({
+      firstPerson: homeUser._id,
+      secondPerson: chatBox._id,
     });
+
+    if (response && response.status === 200) {
+      dispatch({
+        type: "selectChat",
+        payload: {
+          selectedChat: response.data.chat,
+        },
+      });
+      socket.emit("joinchat", response.data.chat, homeUser);
+      dispatch({
+        type: "setSelectedChatMessages",
+        payload: {
+          messages: response.data.chat.messages,
+        },
+      });
+    }
   };
 
   return (
     <>
-      <div className='w-full h-[80vh] overflow-x-scroll'>
+      <div className='remove-scroll w-full h-[80vh] overflow-y-scroll'>
         {chats &&
           chats.map((chatBox, index) => {
             return (

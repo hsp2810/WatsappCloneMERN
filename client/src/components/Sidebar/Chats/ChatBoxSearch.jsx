@@ -7,7 +7,7 @@ const ChatBoxSearch = () => {
       <SearchIcon className='text-iconLighterColor' fontSize='small' />
       <input
         type='text'
-        className='pl-8 bg-panelHeaderBackground pr-3 py-[5px] placeholder:font-normal placeholder:text-sm focus:outline-none text-white '
+        className='pl-8 bg-panelHeaderBackground pr-3 py-[5px] placeholder:font-normal placeholder:text-sm focus:outline-none text-white'
         placeholder='Search or start new chat'
       />
     </div>
